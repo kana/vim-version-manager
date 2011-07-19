@@ -110,8 +110,18 @@ class VimVersionManager:
     sh('cd %s && hg update %s' % (src_dir, tagname))
     return
 
-  def configure(self, version, configure_options):
-    raise NotImplementedError
+  def configure(self, version, custom_configure_options):
+    default_configure_options = (
+      '"--prefix=$HOME/.vvm/vims/%s"' % version,
+    )
+    sh('cd %s && ./configure %s' % (
+      '~/.vvm/src/%s' % version,
+      ' '.join(
+        default_configure_options
+        + configure_options
+      )
+    ))
+    return
 
   def fetch(self, version):
     (fork, tagname) = parse_version(version)
