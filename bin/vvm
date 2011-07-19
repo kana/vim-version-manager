@@ -20,6 +20,8 @@ class VimVersionManager:
   #       $fork--$tagname    This is the "version" format.
   #       current            Symbolic link for an install directory.
 
+  # Driver::
+
   def main(self, args):
     p = optparse.OptionParser(version='%prog 1.2.3')
     p.disable_interspersed_args()
@@ -34,6 +36,8 @@ class VimVersionManager:
         die('Subcommand "%s" is not available.' % subcmd_name)
       subcmd_func(left_args)
     return
+
+  # Subcommands::
 
   def cmd_help(self, args):
     # FIXME: Add more useful description.
@@ -59,10 +63,10 @@ class VimVersionManager:
       die('Please specify a version of Vim to install.')
     version = left_args[0]
     configure_options = left_args[1:]
-    fetch(version)
-    checkout(version)
-    configure(version, configure_options)
-    make_install(version)
+    self.fetch(version)
+    self.checkout(version)
+    self.configure(version, configure_options)
+    self.make_install(version)
     return
 
   def cmd_rebuild(self, args):
@@ -85,23 +89,25 @@ class VimVersionManager:
     # FIXME: Implement.
     pass
 
+  # Utilities::
+
+  def checkout(self, version):
+    raise NotImplementedError
+
+  def configure(self, version, configure_options):
+    raise NotImplementedError
+
+  def fetch(self, version):
+    raise NotImplementedError
+
+  def make_install(self, version):
+    raise NotImplementedError
 
 
 
-def checkout(version):
-  raise NotImplementedError
-
-def configure(version, configure_options):
-  raise NotImplementedError
 
 def die(message):
   return exit(message)
-
-def fetch(version):
-  raise NotImplementedError
-
-def make_install(version):
-  raise NotImplementedError
 
 
 
