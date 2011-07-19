@@ -140,7 +140,7 @@ class VimVersionManager:
       current_path = '~/.vvm/vims/current'
       if isdir(current_path):
         rm(current_path)
-      os.symlink(vims_dir, current_path)
+      ln_s(vims_dir, current_path)
     return
 
   # Utilities::
@@ -209,6 +209,9 @@ def has(progname):
 
 def isdir(path):
   return os.path.isdir(os.path.expanduser(path))
+
+def ln_s(target, link_name):
+  return os.symlink(os.path.expanduser(target), os.path.expanduser(link_name))
 
 def make(version, args):
   return sh('cd %s && make %s' % (
