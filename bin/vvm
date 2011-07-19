@@ -139,7 +139,8 @@ class VimVersionManager:
     return
 
   def make_install(self, version):
-    raise NotImplementedError
+    sh('cd %s && make install' % '~/.vvm/src/%s' % version)
+    return
 
 
 
