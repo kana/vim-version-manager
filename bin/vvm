@@ -159,8 +159,7 @@ class VimVersionManager:
     src_dir = '~/.vvm/src/%s' % version
     if not isdir(src_dir):
       die('Source code of %s is not fetched.' % version)
-    sh('cd %s && hg update %s' % (src_dir, tagname))
-    return
+    return sh('cd %s && hg update %s' % (src_dir, tagname)) == 0
 
   def configure(self, version, custom_configure_options):
     default_configure_options = (
