@@ -1,0 +1,77 @@
+#!/usr/bin/python
+
+import optparse
+import sys
+
+
+
+
+class VimVersionManager:
+  def main(self, args):
+    p = optparse.OptionParser(version='%prog 1.2.3')
+    p.disable_interspersed_args()
+    (options, left_args) = p.parse_args(args[1:])
+    if len(left_args) == 0:
+      p.print_help()
+    else:
+      subcmd_name = left_args[0]
+      try:
+        subcmd_func = getattr(self, 'cmd_%s' % subcmd_name)
+      except AttributeError:
+        die('Subcommand "%s" is not available.' % subcmd_name)
+      subcmd_func(left_args)
+    return
+
+  def cmd_help(self, args):
+    # FIXME: Add more useful description.
+    '''Show help message to use Vim Version Manager.'''
+    subcmd_names = [n for n in dir(self) if n.startswith('cmd_')]
+    subcmd_names.sort()
+    longest_subcmd_name = max(len(n) for n in subcmd_names)
+    print 'Available commands:'
+    for n in subcmd_names:
+      print '  %s%s%s' % (
+        n[len('cmd_'):],
+        ' ' * (longest_subcmd_name - len(n) + 2),
+        getattr(self, n).__doc__.split('\n')[0]
+      )
+    return
+
+  def cmd_install(self, args):
+    '''Install a specific version of Vim.'''
+    # FIXME: Implement.
+    pass
+
+  def cmd_rebuild(self, args):
+    '''Rebuild a specific version of Vim.'''
+    # FIXME: Implement.
+    pass
+
+  def cmd_reinstall(self, args):
+    '''Reinstall a specific version of Vim.'''
+    # FIXME: Implement.
+    pass
+
+  def cmd_uninstall(self, args):
+    '''Uninstall a specific version of Vim.'''
+    # FIXME: Implement.
+    pass
+
+  def cmd_use(self, args):
+    '''Use a specific version of Vim as the default one.'''
+    # FIXME: Implement.
+    pass
+
+
+
+
+def die(message):
+  return exit(message)
+
+
+
+
+if __name__ == '__main__':
+  VimVersionManager().main(sys.argv)
+
+# __END__
