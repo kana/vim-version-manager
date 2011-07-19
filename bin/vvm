@@ -207,6 +207,10 @@ class VvmOptionParser(optparse.OptionParser):
     self.disable_interspersed_args()
     return
 
+  def parse_args(self, args):
+    # optparse.OptionParser.parse_args doesn't accespt tuple.
+    return optparse.OptionParser.parse_args(self, list(args))
+
 def die(message):
   return exit(message)
 
