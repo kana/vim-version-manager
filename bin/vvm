@@ -60,6 +60,7 @@ class VimVersionManager:
   def cmd_install(self, args):
     '''Install a specific version of Vim.'''
     p = optparse.OptionParser()
+    p.disable_interspersed_args()
     p.usage = '%prog install $version'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
@@ -75,6 +76,7 @@ class VimVersionManager:
   def cmd_rebuild(self, args):
     '''Rebuild a specific version of Vim, then install it.'''
     p = optparse.OptionParser()
+    p.disable_interspersed_args()
     p.usage = '%prog rebuild $version'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
@@ -89,6 +91,7 @@ class VimVersionManager:
   def cmd_reinstall(self, args):
     '''Reinstall a specific version of Vim.'''
     p = optparse.OptionParser()
+    p.disable_interspersed_args()
     p.usage = '%prog reinstall $version'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
@@ -100,6 +103,7 @@ class VimVersionManager:
   def cmd_uninstall(self, args):
     '''Uninstall a specific version of Vim.'''
     p = optparse.OptionParser()
+    p.disable_interspersed_args()
     p.usage = '%prog uninstall $version'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
@@ -125,6 +129,7 @@ class VimVersionManager:
   def cmd_use(self, args):
     '''Use a specific version of Vim as the default one.'''
     p = optparse.OptionParser()
+    p.disable_interspersed_args()
     p.usage = '%prog use $version'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
