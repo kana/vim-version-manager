@@ -195,7 +195,7 @@ class VimVersionManager:
     return
 
   def make_install(self, version):
-    make(versionk ('install',))
+    make(version, ('install',))
     return
 
 
