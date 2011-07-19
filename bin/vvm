@@ -192,12 +192,10 @@ class VimVersionManager:
     return
 
   def make_clean(self, version):
-    make(version, ('clean',))
-    return
+    return make(version, ('clean',))
 
   def make_install(self, version):
-    make(version, ('install',))
-    return
+    return make(version, ('install',))
 
 
 
