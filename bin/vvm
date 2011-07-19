@@ -87,8 +87,14 @@ class VimVersionManager:
 
   def cmd_reinstall(self, args):
     '''Reinstall a specific version of Vim.'''
-    # FIXME: Implement.
-    pass
+    p = optparse.OptionParser()
+    p.usage = '%prog reinstall $version'
+    (options, left_args) = p.parse_args(args[1:])
+    if len(left_args) == 0:
+      die('Please specify a version of Vim to reinstall.')
+    self.cmd_uninstall(self, ('uninstall',) + left_args)
+    self.cmd_install(self, ('install',) + left_args)
+    return
 
   def cmd_uninstall(self, args):
     '''Uninstall a specific version of Vim.'''
