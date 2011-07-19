@@ -99,7 +99,12 @@ class VimVersionManager:
     raise NotImplementedError
 
   def fetch(self, version):
-    raise NotImplementedError
+    (fork, tagname) = parse_version(version)
+    try:
+      fetch_func = getattr(self, 'fetch_%s' % fork)
+    except AttributeError:
+      die('Fork "%s" is not known.' % fork)
+    return fetch_func(version, fork, tagname)
 
   def make_install(self, version):
     raise NotImplementedError
