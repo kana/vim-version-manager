@@ -186,7 +186,8 @@ class VimVersionManager:
   def fetch_vimorg(self, version, fork, tagname):
     if not has('hg'):
       die('Mercurial is required to install %s.' % fork)
-    mkdir('~/.vvm/src')
+    if not isdir('~/.vvm/src'):
+      mkdir('~/.vvm/src')
     sh('hg clone https://vim.googlecode.com/hg/ ~/.vvm/src/%s' % version)
     return
 
