@@ -7,6 +7,19 @@ import sys
 
 
 class VimVersionManager:
+  # Directory structure:
+  #   ~/.vvm                 The root directory for Vim Version Manager.
+  #     bin                  For command-line utilities.
+  #     src                  Place to store source code of each version.
+  #       ...
+  #       $fork--$tagname    Naming is the same as ~/.vvm/vims.
+  #     vims                 Place to store deployed versions.
+  #       vimorg--v7-3-254   Install directory for the original one.
+  #       macvim--v7.3-53    Install directory for MacVim.
+  #       ...
+  #       $fork--$tagname    This is the "version" format.
+  #       current            Symbolic link for an install directory.
+
   def main(self, args):
     p = optparse.OptionParser(version='%prog 1.2.3')
     p.disable_interspersed_args()
