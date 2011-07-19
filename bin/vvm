@@ -144,7 +144,7 @@ class VimVersionManager:
       if isdir(current_path):
         rm(current_path)
       ln_s(vims_dir, current_path)
-    return
+    return True
 
   # Utilities::
 
