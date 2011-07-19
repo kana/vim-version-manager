@@ -72,9 +72,18 @@ class VimVersionManager:
     return
 
   def cmd_rebuild(self, args):
-    '''Rebuild a specific version of Vim.'''
-    # FIXME: Implement.
-    pass
+    '''Rebuild a specific version of Vim, then install it.'''
+    p = optparse.OptionParser()
+    p.usage = '%prog rebuild $version'
+    (options, left_args) = p.parse_args(args[1:])
+    if len(left_args) == 0:
+      die('Please specify a version of Vim to rebuild.')
+    version = left_args[0]
+    configure_options = left_args[1:]
+    self.make_clean(version)
+    self.configure(version, configure_options)
+    self.make_install(version)
+    return
 
   def cmd_reinstall(self, args):
     '''Reinstall a specific version of Vim.'''
@@ -136,6 +145,10 @@ class VimVersionManager:
       die('Mercurial is required to install %s.' % fork)
     mkdir('~/.vvm/src')
     sh('hg clone https://vim.googlecode.com/hg/ ~/.vvm/src/%s' % version)
+    return
+
+  def make_clean(self, version):
+    sh('cd %s && make clean' % '~/.vvm/src/%s' % version)
     return
 
   def make_install(self, version):
