@@ -166,14 +166,13 @@ class VimVersionManager:
     default_configure_options = (
       '"--prefix=$HOME/.vvm/vims/%s"' % version,
     )
-    sh('cd %s && ./configure %s' % (
+    return sh('cd %s && ./configure %s' % (
       '~/.vvm/src/%s' % version,
       ' '.join(
         default_configure_options
         + tuple(custom_configure_options)
       )
-    ))
-    return
+    )) == 0
 
   def fetch(self, version):
     (fork, tagname) = parse_version(version)
