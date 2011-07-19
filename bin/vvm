@@ -172,7 +172,7 @@ class VimVersionManager:
       '~/.vvm/src/%s' % version,
       ' '.join(
         default_configure_options
-        + tuple(custom_configure_options)
+        + tuple("'%s'" % o for o in custom_configure_options)
       )
     )) == 0
 
