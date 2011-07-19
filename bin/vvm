@@ -186,8 +186,9 @@ class VimVersionManager:
       die('Mercurial is required to install %s.' % fork)
     if not isdir('~/.vvm/src'):
       mkdir('~/.vvm/src')
-    sh('hg clone https://vim.googlecode.com/hg/ ~/.vvm/src/%s' % version)
-    return
+    return sh('hg clone https://vim.googlecode.com/hg/ ~/.vvm/src/%s' % (
+      version,
+    )) == 0
 
   def make_clean(self, version):
     return make(version, ('clean',))
