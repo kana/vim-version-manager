@@ -105,16 +105,16 @@ class VimVersionManager:
       die('Please specify a version of Vim to uninstall.')
     version = left_args[0]
     current_path = '~/.vvm/vims/current'
+    src_dir = '~/.vvm/src/%s' % version
+    vims_dir = '~/.vvm/vims/%s' % version
     if isdir(current_path):
       target_path = readlink(current_path)
-      if normalize_path(target_path) == normalize_path(current_path):
+      if normalize_path(target_path) == normalize_path(vims_dir):
         die('%s can not be uninstalled; it is currently used.' % version)
-    src_dir = '~/.vvm/src/%s' % version
     if isdir(src_dir):
       rm_r(src_dir)
     else:
       print 'Something wrong; %s source does not exist.' % version
-    vims_dir = '~/.vvm/vims/%s' % version
     if isdir(vims_dir):
       rm_r(vims_dir)
     else:
