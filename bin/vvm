@@ -96,8 +96,8 @@ class VimVersionManager:
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to reinstall.')
-    self.cmd_uninstall(self, ('uninstall',) + left_args)
-    self.cmd_install(self, ('install',) + left_args)
+    self.cmd_uninstall(self, ('uninstall',) + tuple(left_args))
+    self.cmd_install(self, ('install',) + tuple(left_args))
     return
 
   def cmd_uninstall(self, args):
