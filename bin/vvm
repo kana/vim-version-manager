@@ -102,6 +102,14 @@ class VimVersionManager:
       die('Fork "%s" is not known.' % fork)
     return checkout_func(version, fork, tagname)
 
+  def checkout_vimorg(self, version, fork, tagname):
+    if not has('hg'):
+      die('Mercurial is required to checkout %s.' % fork)
+    if not os.path.isdir(os.path.expanduser('~/.vvm/src/%s' % version)):
+      die('Source code of %s is not fetched.' % version)
+    invoke('hg', 'update', tagname)
+    return
+
   def configure(self, version, configure_options):
     raise NotImplementedError
 
