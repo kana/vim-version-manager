@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 import optparse
+import os
+import os.path
 import subprocess
 import sys
 
@@ -106,6 +108,14 @@ class VimVersionManager:
       die('Fork "%s" is not known.' % fork)
     return fetch_func(version, fork, tagname)
 
+  def fetch_vimorg(self, version, fork, tagname):
+    if not has('hg'):
+      die('Mercurial is required to install %s.' % fork)
+    mkdir('~/.vvm/src')
+    invoke('hg', 'clone', 'https://vim.googlecode.com/hg/',
+           os.path.expanduser('~/.vvm/src/%s' % version))
+    return
+
   def make_install(self, version):
     raise NotImplementedError
 
@@ -125,6 +135,9 @@ def invoke(*args, **kw):
     raise RuntimeError('"%s" is failed.' % ' '.join(args))
   else:
     return retcode
+
+def mkdir(path):
+  return os.makedirs(os.path.expanduser(path), 0755)
 
 def parse_version(version):
   return version.split('--')
