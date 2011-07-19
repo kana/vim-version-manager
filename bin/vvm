@@ -92,8 +92,28 @@ class VimVersionManager:
 
   def cmd_uninstall(self, args):
     '''Uninstall a specific version of Vim.'''
-    # FIXME: Implement.
-    pass
+    p = optparse.OptionParser()
+    p.usage = '%prog uninstall $version'
+    (options, left_args) = p.parse_args(args[1:])
+    if len(left_args) == 0:
+      die('Please specify a version of Vim to uninstall.')
+    version = left_args[0]
+    current_path = '~/.vvm/vims/current'
+    if os.isdir(current_path):
+      target_path = os.readlink(current_path)
+      if os.path.abspath(target_path) == os.path.abspath(current_path):
+        die('%s can not be uninstalled; it is currently used.' % version)
+    src_dir = '~/.vvm/src/%s' % version
+    if os.isdir(src_dir):
+      os.removedirs(src_dir)
+    else:
+      print 'Something wrong; %s source does not exist.' % version
+    vims_dir = '~/.vvm/vims/%s' % version
+    if os.isdir(vims_dir):
+      os.removedirs(vims_dir)
+    else:
+      print 'Something wrong; %s binary does not exist.' % version
+    return
 
   def cmd_use(self, args):
     '''Use a specific version of Vim as the default one.'''
