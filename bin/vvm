@@ -54,7 +54,7 @@ class VimVersionManager:
         ' ' * (longest_subcmd_name - len(n) + 2),
         getattr(self, n).__doc__.split('\n')[0]
       )
-    return
+    return True
 
   def cmd_install(self, args):
     '''Install a specific version of Vim.'''
