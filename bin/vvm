@@ -105,17 +105,17 @@ class VimVersionManager:
       die('Please specify a version of Vim to uninstall.')
     version = left_args[0]
     current_path = '~/.vvm/vims/current'
-    if os.isdir(current_path):
+    if isdir(current_path):
       target_path = os.readlink(current_path)
       if os.path.abspath(target_path) == os.path.abspath(current_path):
         die('%s can not be uninstalled; it is currently used.' % version)
     src_dir = '~/.vvm/src/%s' % version
-    if os.isdir(src_dir):
+    if isdir(src_dir):
       rm_r(src_dir)
     else:
       print 'Something wrong; %s source does not exist.' % version
     vims_dir = '~/.vvm/vims/%s' % version
-    if os.isdir(vims_dir):
+    if isdir(vims_dir):
       rm_r(vims_dir)
     else:
       print 'Something wrong; %s binary does not exist.' % version
@@ -131,14 +131,14 @@ class VimVersionManager:
     version = left_args[0]
     if version == 'system':
       current_path = '~/.vvm/vims/current'
-      if os.isdir(current_path):
+      if isdir(current_path):
         rm(current_path)
     else:
       vims_dir = '~/.vvm/vims/%s' % version
-      if not os.isdir(vims_dir):
+      if not isdir(vims_dir):
         die('%s is not installed.' % version)
       current_path = '~/.vvm/vims/current'
-      if os.isdir(current_path):
+      if isdir(current_path):
         rm(current_path)
       os.symlink(vims_dir, current_path)
     return
@@ -156,8 +156,8 @@ class VimVersionManager:
   def checkout_vimorg(self, version, fork, tagname):
     if not has('hg'):
       die('Mercurial is required to checkout %s.' % fork)
-    src_dir = os.path.expanduser('~/.vvm/src/%s' % version)
-    if not os.path.isdir(src_dir):
+    src_dir = '~/.vvm/src/%s' % version
+    if not isdir(src_dir):
       die('Source code of %s is not fetched.' % version)
     sh('cd %s && hg update %s' % (src_dir, tagname))
     return
@@ -206,6 +206,9 @@ def die(message):
 
 def has(progname):
   return sh('which %s >/dev/null 2>/dev/null' % progname) == 0
+
+def isdir(path):
+  return os.isdir(os.path.expanduser(path))
 
 def make(version, args):
   return sh('cd %s && make %s' % (
