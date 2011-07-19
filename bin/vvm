@@ -191,11 +191,11 @@ class VimVersionManager:
     return
 
   def make_clean(self, version):
-    sh('cd %s && make clean' % '~/.vvm/src/%s' % version)
+    make(version, ('clean',))
     return
 
   def make_install(self, version):
-    sh('cd %s && make install' % '~/.vvm/src/%s' % version)
+    make(versionk ('install',))
     return
 
 
@@ -206,6 +206,12 @@ def die(message):
 
 def has(progname):
   return sh('which %s >/dev/null 2>/dev/null' % progname) == 0
+
+def make(version, args):
+  return sh('cd %s && make %s' % (
+    '~/.vvm/src/%s' % version,
+    ' '.join(args)
+  ))
 
 def mkdir(path):
   return os.makedirs(os.path.expanduser(path), 0755)
