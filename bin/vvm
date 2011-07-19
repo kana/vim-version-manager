@@ -3,6 +3,7 @@
 import optparse
 import os
 import os.path
+import shutil
 import sys
 
 
@@ -235,7 +236,7 @@ def rm(path):
   return os.remove(os.path.expanduser(path))
 
 def rm_r(path):
-  return os.removedirs(os.path.expanduser(path))
+  return shutil.rmtree(os.path.expanduser(path))
 
 def sh(cmdline):
   return os.system(cmdline)
