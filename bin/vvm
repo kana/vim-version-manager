@@ -123,8 +123,25 @@ class VimVersionManager:
 
   def cmd_use(self, args):
     '''Use a specific version of Vim as the default one.'''
-    # FIXME: Implement.
-    pass
+    p = optparse.OptionParser()
+    p.usage = '%prog use $version'
+    (options, left_args) = p.parse_args(args[1:])
+    if len(left_args) == 0:
+      die('Please specify a version of Vim to use.')
+    version = left_args[0]
+    if version == 'system':
+      current_path = '~/.vvm/vims/current'
+      if os.isdir(current_path):
+        os.remove(current_path)
+    else:
+      vims_dir = '~/.vvm/vims/%s' % version
+      if not os.isdir(vims_dir):
+        die('%s is not installed.' % version)
+      current_path = '~/.vvm/vims/current'
+      if os.isdir(current_path):
+        os.remove(current_path)
+      os.symlink(vims_dir, current_path)
+    return
 
   # Utilities::
 
