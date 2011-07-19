@@ -228,7 +228,7 @@ def make(version, args):
   return sh('cd %s && make %s' % (
     '~/.vvm/src/%s' % version,
     ' '.join(args)
-  ))
+  )) == 0
 
 def mkdir(path):
   return os.makedirs(os.path.expanduser(path), 0755)
