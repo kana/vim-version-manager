@@ -107,7 +107,7 @@ class VimVersionManager:
     current_path = '~/.vvm/vims/current'
     if isdir(current_path):
       target_path = readlink(current_path)
-      if os.path.abspath(target_path) == os.path.abspath(current_path):
+      if normalize_path(target_path) == normalize_path(current_path):
         die('%s can not be uninstalled; it is currently used.' % version)
     src_dir = '~/.vvm/src/%s' % version
     if isdir(src_dir):
@@ -221,6 +221,9 @@ def make(version, args):
 
 def mkdir(path):
   return os.makedirs(os.path.expanduser(path), 0755)
+
+def normalize_path(path):
+  return os.path.abspath(os.path.expanduser(path))
 
 def parse_version(version):
   return version.split('--')
