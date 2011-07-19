@@ -95,7 +95,12 @@ class VimVersionManager:
   # Utilities::
 
   def checkout(self, version):
-    raise NotImplementedError
+    (fork, tagname) = parse_version(version)
+    try:
+      checkout_func = getattr(self, 'checkout_%s' % fork)
+    except AttributeError:
+      die('Fork "%s" is not known.' % fork)
+    return checkout_func(version, fork, tagname)
 
   def configure(self, version, configure_options):
     raise NotImplementedError
