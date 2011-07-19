@@ -111,12 +111,12 @@ class VimVersionManager:
         die('%s can not be uninstalled; it is currently used.' % version)
     src_dir = '~/.vvm/src/%s' % version
     if os.isdir(src_dir):
-      os.removedirs(src_dir)
+      rm_r(src_dir)
     else:
       print 'Something wrong; %s source does not exist.' % version
     vims_dir = '~/.vvm/vims/%s' % version
     if os.isdir(vims_dir):
-      os.removedirs(vims_dir)
+      rm_r(vims_dir)
     else:
       print 'Something wrong; %s binary does not exist.' % version
     return
@@ -132,14 +132,14 @@ class VimVersionManager:
     if version == 'system':
       current_path = '~/.vvm/vims/current'
       if os.isdir(current_path):
-        os.remove(current_path)
+        rm(current_path)
     else:
       vims_dir = '~/.vvm/vims/%s' % version
       if not os.isdir(vims_dir):
         die('%s is not installed.' % version)
       current_path = '~/.vvm/vims/current'
       if os.isdir(current_path):
-        os.remove(current_path)
+        rm(current_path)
       os.symlink(vims_dir, current_path)
     return
 
@@ -212,6 +212,12 @@ def mkdir(path):
 
 def parse_version(version):
   return version.split('--')
+
+def rm(path):
+  return os.remove(os.path.expanduser(path))
+
+def rm_r(path):
+  return os.removedirs(os.path.expanduser(path))
 
 def sh(cmdline):
   return os.system(cmdline)
