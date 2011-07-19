@@ -3,7 +3,6 @@
 import optparse
 import os
 import os.path
-import subprocess
 import sys
 
 
@@ -105,9 +104,10 @@ class VimVersionManager:
   def checkout_vimorg(self, version, fork, tagname):
     if not has('hg'):
       die('Mercurial is required to checkout %s.' % fork)
-    if not os.path.isdir(os.path.expanduser('~/.vvm/src/%s' % version)):
+    src_dir = os.path.expanduser('~/.vvm/src/%s' % version)
+    if not os.path.isdir(src_dir):
       die('Source code of %s is not fetched.' % version)
-    invoke('hg', 'update', tagname)
+    sh('cd %s && hg update %s' % (src_dir, tagname))
     return
 
   def configure(self, version, configure_options):
@@ -125,8 +125,7 @@ class VimVersionManager:
     if not has('hg'):
       die('Mercurial is required to install %s.' % fork)
     mkdir('~/.vvm/src')
-    invoke('hg', 'clone', 'https://vim.googlecode.com/hg/',
-           os.path.expanduser('~/.vvm/src/%s' % version))
+    sh('hg clone https://vim.googlecode.com/hg/ ~/.vvm/src/%s' % version)
     return
 
   def make_install(self, version):
@@ -139,21 +138,16 @@ def die(message):
   return exit(message)
 
 def has(progname):
-  return invoke('which', progname, exit_on_failure=False) == 0
-
-def invoke(*args, **kw):
-  dev_null = open('/dev/null', 'w')
-  retcode = subprocess.call(args, stdout=dev_null, stderr=dev_null)
-  if retcode != 0 and kw.get('exit_on_failure', True):
-    raise RuntimeError('"%s" is failed.' % ' '.join(args))
-  else:
-    return retcode
+  return sh('which %s >/dev/null 2>/dev/null' % progname) == 0
 
 def mkdir(path):
   return os.makedirs(os.path.expanduser(path), 0755)
 
 def parse_version(version):
   return version.split('--')
+
+def sh(cmdline):
+  return os.system(cmdline)
 
 
 
