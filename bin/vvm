@@ -122,7 +122,7 @@ class VimVersionManager:
       rm_r(vims_dir)
     else:
       print 'Something wrong; %s binary does not exist.' % version
-    return
+    return True
 
   def cmd_use(self, args):
     '''Use a specific version of Vim as the default one.'''
