@@ -65,11 +65,12 @@ class VimVersionManager:
       die('Please specify a version of Vim to install.')
     version = left_args[0]
     configure_options = left_args[1:]
-    self.fetch(version)
-    self.checkout(version)
-    self.configure(version, configure_options)
-    self.make_install(version)
-    return
+    return (
+      self.fetch(version)
+      and self.checkout(version)
+      and self.configure(version, configure_options)
+      and self.make_install(version)
+    )
 
   def cmd_rebuild(self, args):
     '''Rebuild a specific version of Vim, then install it.'''
