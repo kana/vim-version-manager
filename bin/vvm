@@ -225,7 +225,8 @@ def isdir(path):
   return os.path.isdir(os.path.expanduser(path))
 
 def ln_s(target, link_name):
-  return os.symlink(os.path.expanduser(target), os.path.expanduser(link_name))
+  os.symlink(os.path.expanduser(target), os.path.expanduser(link_name))
+  return True
 
 def make(version, args):
   return sh('cd %s && make %s' % (
@@ -234,7 +235,8 @@ def make(version, args):
   )) == 0
 
 def mkdir(path):
-  return os.makedirs(os.path.expanduser(path), 0755)
+  os.makedirs(os.path.expanduser(path), 0755)
+  return True
 
 def normalize_path(path):
   return os.path.abspath(os.path.expanduser(path))
@@ -246,10 +248,12 @@ def readlink(path):
   return os.readlink(os.path.expanduser(path))
 
 def rm(path):
-  return os.remove(os.path.expanduser(path))
+  os.remove(os.path.expanduser(path))
+  return True
 
 def rm_r(path):
-  return shutil.rmtree(os.path.expanduser(path))
+  shutil.rmtree(os.path.expanduser(path))
+  return True
 
 def sh(cmdline):
   return os.system(cmdline)
