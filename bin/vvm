@@ -160,12 +160,18 @@ class VimVersionManager:
     return checkout_func(version, fork, tagname)
 
   def checkout_vimorg(self, version, fork, tagname):
-    if not has('hg'):
-      die('Mercurial is required to checkout %s.' % fork)
+    repos_dir = '~/.vvm/repos/%s' % fork
     src_dir = '~/.vvm/src/%s' % version
-    if not isdir(src_dir):
-      die('Source code of %s is not fetched.' % version)
-    return sh('cd %s && hg update %s' % (src_dir, tagname)) == 0
+    return (
+      (has('hg') or die('Mercurial is required to checkout %s.' % fork))
+      and (isdir('~/.vvm/src') or mkdir('~/.vvm/src'))
+      and (
+        isdir(src_dir)
+        or sh('cd %s && hg archive -t tar -r %s -p %s - | (cd %s && tar xf -)'
+              % (repos_dir, tagname, version, '~/.vvm/src')) == 0
+        or die()
+      )
+    )
 
   def configure(self, version, custom_configure_options):
     default_configure_options = (
@@ -189,11 +195,17 @@ class VimVersionManager:
 
   def fetch_vimorg(self, version, fork, tagname):
     repos_uri = 'https://vim.googlecode.com/hg/'
+    repos_dir = '~/.vvm/repos/%s' % fork
     src_dir = '~/.vvm/src/%s' % version
     return (
       (has('hg') or die('Mercurial is required to install %s.' % fork))
-      and (isdir('~/.vvm/src') or mkdir('~/.vvm/src'))
-      and (sh('hg clone %s %s' % (repos_uri, src_dir)) == 0 or die())
+      and (isdir('~/.vvm/repos') or mkdir('~/.vvm/repos'))
+      and (
+        isdir(repos_dir)
+        or sh('hg clone %s %s' % (repos_uri, repos_dir)) == 0
+        or die()
+      )
+      and (sh('cd %s && hg pull' % repos_dir) == 0 or die())
     )
 
   def make_clean(self, version):
