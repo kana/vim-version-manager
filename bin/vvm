@@ -75,7 +75,7 @@ class VimVersionManager:
   def cmd_install(self, args):
     '''Install a specific version of Vim.'''
     p = VvmOptionParser()
-    p.usage = '%prog install $version'
+    p.usage = '%prog install $version $configure_option ...'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to install.')
@@ -91,7 +91,7 @@ class VimVersionManager:
   def cmd_rebuild(self, args):
     '''Rebuild a specific version of Vim, then install it.'''
     p = VvmOptionParser()
-    p.usage = '%prog rebuild $version'
+    p.usage = '%prog rebuild $version $configure_option ...'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to rebuild.')
@@ -106,7 +106,7 @@ class VimVersionManager:
   def cmd_reinstall(self, args):
     '''Reinstall a specific version of Vim.'''
     p = VvmOptionParser()
-    p.usage = '%prog reinstall $version'
+    p.usage = '%prog reinstall $version $configure_option ...'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to reinstall.')
