@@ -44,6 +44,19 @@ class VimVersionManager:
 
   # Subcommands::
 
+  def cmd_fetch(self, args):
+    '''Fetch source code of a specific version of Vim.'''
+    p = VvmOptionParser()
+    p.usage = '%prog fetch $version'
+    (options, left_args) = p.parse_args(args[1:])
+    if len(left_args) == 0:
+      die('Please specify a version of Vim to fetch its source code.')
+    version = left_args[0]
+    return (
+      self.fetch(version)
+      and self.checkout(version)
+    )
+
   def cmd_help(self, args):
     # FIXME: Add more useful description.
     '''Show help message to use Vim Version Manager.'''
