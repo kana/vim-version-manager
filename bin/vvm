@@ -13,15 +13,18 @@ class VimVersionManager:
   # Directory structure:
   #   ~/.vvm                 The root directory for Vim Version Manager.
   #     bin                  For command-line utilities.
+  #     repos                Place to store repository of each version.
+  #       $fork
+  #       ...
   #     src                  Place to store source code of each version.
-  #       ...
   #       $fork--$tagname    Naming is the same as ~/.vvm/vims.
-  #     vims                 Place to store deployed versions.
-  #       vimorg--v7-3-254   Install directory for the original one.
-  #       macvim--v7.3-53    Install directory for MacVim.
   #       ...
-  #       $fork--$tagname    This is the "version" format.
+  #     vims                 Place to store deployed versions.
   #       current            Symbolic link for an install directory.
+  #       $fork--$tagname    This is the "version" format.
+  #       vimorg--v7-3-254   Example: Install directory for the original one.
+  #       macvim--v7.3-53    Example: Install directory for MacVim.
+  #       ...
 
   # Driver::
 
