@@ -188,13 +188,13 @@ class VimVersionManager:
     return fetch_func(version, fork, tagname)
 
   def fetch_vimorg(self, version, fork, tagname):
-    if not has('hg'):
-      die('Mercurial is required to install %s.' % fork)
-    if not isdir('~/.vvm/src'):
-      mkdir('~/.vvm/src')
-    return sh('hg clone https://vim.googlecode.com/hg/ ~/.vvm/src/%s' % (
-      version,
-    )) == 0
+    repos_uri = 'https://vim.googlecode.com/hg/'
+    src_dir = '~/.vvm/src/%s' % version
+    return (
+      (has('hg') or die('Mercurial is required to install %s.' % fork))
+      and (isdir('~/.vvm/src') or mkdir('~/.vvm/src'))
+      and (sh('hg clone %s %s' % (repos_uri, src_dir)) == 0 or die())
+    )
 
   def make_clean(self, version):
     return make(version, ('clean',))
