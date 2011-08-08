@@ -125,9 +125,9 @@ class VimVersionManager:
     if len(left_args) == 0:
       die('Please specify a version of Vim to uninstall.')
     version = left_args[0]
-    current_path = '~/.vvm/vims/current'
-    src_dir = '~/.vvm/src/%s' % version
-    vims_dir = '~/.vvm/vims/%s' % version
+    current_path = get_vims_dir('current')
+    src_dir = get_src_dir(version)
+    vims_dir = get_vims_dir(version)
     if isdir(current_path):
       target_path = readlink(current_path)
       if normalize_path(target_path) == normalize_path(vims_dir):
@@ -151,14 +151,14 @@ class VimVersionManager:
       die('Please specify a version of Vim to use.')
     version = left_args[0]
     if version == 'system':
-      current_path = '~/.vvm/vims/current'
+      current_path = get_vims_dir('current')
       if isdir(current_path):
         rm(current_path)
     else:
-      vims_dir = '~/.vvm/vims/%s' % version
+      vims_dir = get_vims_dir(version)
       if not isdir(vims_dir):
         die('%s is not installed.' % version)
-      current_path = '~/.vvm/vims/current'
+      current_path = get_vims_dir('current')
       if isdir(current_path):
         rm(current_path)
       ln_s(vims_dir, current_path)
@@ -175,25 +175,25 @@ class VimVersionManager:
     return checkout_func(version, fork, tagname)
 
   def checkout_vimorg(self, version, fork, tagname):
-    repos_dir = '~/.vvm/repos/%s' % fork
-    src_dir = '~/.vvm/src/%s' % version
+    repos_dir = get_repos_dir(fork)
+    src_dir = get_src_dir(version)
     return (
       (has('hg') or die('Mercurial is required to checkout %s.' % fork))
-      and (isdir('~/.vvm/src') or mkdir('~/.vvm/src'))
+      and (isdir(get_src_dir_itself()) or mkdir(get_src_dir_itself()))
       and (
         isdir(src_dir)
         or sh('cd %s && hg archive -t tar -r %s -p %s - | (cd %s && tar xf -)'
-              % (repos_dir, tagname, version, '~/.vvm/src')) == 0
+              % (repos_dir, tagname, version, get_src_dir_itself())) == 0
         or die()
       )
     )
 
   def configure(self, version, custom_configure_options):
     default_configure_options = (
-      '"--prefix=$HOME/.vvm/vims/%s"' % version,
+      '"--prefix=%s"' % os.path.expanduser(get_vims_dir(version)),
     )
     return sh('cd %s && ./configure %s' % (
-      '~/.vvm/src/%s' % version,
+      get_src_dir(version),
       ' '.join(
         default_configure_options
         + tuple("'%s'" % o for o in custom_configure_options)
@@ -210,11 +210,11 @@ class VimVersionManager:
 
   def fetch_vimorg(self, version, fork, tagname):
     repos_uri = 'https://vim.googlecode.com/hg/'
-    repos_dir = '~/.vvm/repos/%s' % fork
-    src_dir = '~/.vvm/src/%s' % version
+    repos_dir = get_repos_dir(fork)
+    src_dir = get_src_dir(version)
     return (
       (has('hg') or die('Mercurial is required to install %s.' % fork))
-      and (isdir('~/.vvm/repos') or mkdir('~/.vvm/repos'))
+      and (isdir(get_repos_dir_itself()) or mkdir(get_repos_dir_itself()))
       and (
         isdir(repos_dir)
         or sh('hg clone %s %s' % (repos_uri, repos_dir)) == 0
@@ -278,7 +278,7 @@ def ln_s(target, link_name):
 
 def make(version, args):
   return sh('cd %s && make %s' % (
-    '~/.vvm/src/%s' % version,
+    get_src_dir(version),
     ' '.join(args)
   )) == 0
 
