@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# FIXME: Add API to get a path to "repos", "src", and other directories.
 # FIXME: Add a set up shell script for daily use.
 # FIXME: Refine implementation of subcommands.
 
@@ -229,6 +228,27 @@ class VimVersionManager:
 
   def make_install(self, version):
     return make(version, ('install',))
+
+
+
+
+def get_repos_dir(fork):
+  return '%s/%s' % (get_repos_dir_itself(), fork)
+
+def get_repos_dir_itself():
+  return '~/.vvm/repos'
+
+def get_src_dir(version):
+  return '%s/%s' % (get_src_dir_itself(), version)
+
+def get_src_dir_itself():
+  return '~/.vvm/src'
+
+def get_vims_dir(version):
+  return '%s/%s' % (get_vims_dir_itself(), version)
+
+def get_vims_dir_itself():
+  return '~/.vvm/vims'
 
 
 
