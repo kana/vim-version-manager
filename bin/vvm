@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# FIXME: Add tests.
 # FIXME: Refine implementation of subcommands.
 
 import optparse
