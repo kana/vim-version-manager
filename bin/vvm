@@ -174,6 +174,21 @@ class VimVersionManager:
       die('Fork "%s" is not known.' % fork)
     return checkout_func(version, fork, tagname)
 
+  def checkout_macvim(self, version, fork, tagname):
+    # FIXME: Refine - Most steps are similar to checkout_vimorg.
+    repos_dir = get_repos_dir(fork)
+    src_dir = get_src_dir(version)
+    return (
+      (has('git') or die('Git is required to checkout %s.' % fork))
+      and (isdir(get_src_dir_itself()) or mkdir(get_src_dir_itself()))
+      and (
+        isdir(src_dir)
+        or sh('cd %s && git archive --prefix=%s/ %s | (cd %s && tar xf -)'
+              % (repos_dir, version, tagname, get_src_dir_itself())) == 0
+        or die()
+      )
+    )
+
   def checkout_vimorg(self, version, fork, tagname):
     repos_dir = get_repos_dir(fork)
     src_dir = get_src_dir(version)
@@ -207,6 +222,22 @@ class VimVersionManager:
     except AttributeError:
       die('Fork "%s" is not known.' % fork)
     return fetch_func(version, fork, tagname)
+
+  def fetch_macvim(self, version, fork, tagname):
+    # FIXME: Refine - Most steps are similar to fetch_vimorg.
+    repos_uri = 'git://github.com/b4winckler/macvim.git'
+    repos_dir = get_repos_dir(fork)
+    src_dir = get_src_dir(version)
+    return (
+      (has('git') or die('Git is required to install %s.' % fork))
+      and (isdir(get_repos_dir_itself()) or mkdir(get_repos_dir_itself()))
+      and (
+        isdir(repos_dir)
+        or sh('git clone --bare %s %s' % (repos_uri, repos_dir)) == 0
+        or die()
+      )
+      and (sh('cd %s && git fetch' % repos_dir) == 0 or die())
+    )
 
   def fetch_vimorg(self, version, fork, tagname):
     repos_uri = 'https://vim.googlecode.com/hg/'
