@@ -135,6 +135,12 @@ class VimVersionManager:
         )) == 0
         and ln_s('%s/bin' % repos_dir, '%s/bin' % get_vvm_dir())
         and ln_s('%s/etc' % repos_dir, '%s/etc' % get_vvm_dir())
+        and echo('\n'.join((
+          '',
+          'VVM is successfully installed.  For daily use,',
+          'please add the following line into your ~/.bash_login etc:',
+          'test -f ~/.vvm/etc/login && source ~/.vvm/etc/login',
+        )))
       )
     )
 
@@ -320,6 +326,10 @@ class VvmOptionParser(optparse.OptionParser):
 
 def die(message=''):
   return exit(message)
+
+def echo(message):
+  print message
+  return True
 
 def has(progname):
   return sh('which %s >/dev/null 2>/dev/null' % progname) == 0
