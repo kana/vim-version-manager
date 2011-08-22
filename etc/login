@@ -1,0 +1,14 @@
+#!/bin/bash
+
+__vvm_configure_path()
+{
+  local vvm_bin_path="$HOME/.vvm/bin:$HOME/.vvm/vims/current/bin"
+
+  echo "$PATH" | grep -Fqv "$vvm_bin_path" &&
+    PATH="$vvm_bin_path:$PATH"
+}
+
+
+__vvm_configure_path
+
+# __END__

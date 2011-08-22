@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# FIXME: Add a set up shell script for daily use.
 # FIXME: Refine implementation of subcommands.
 
 import optparse
