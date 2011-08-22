@@ -116,6 +116,27 @@ class VimVersionManager:
       and self.cmd_install(('install',) + tuple(left_args))
     )
 
+  def cmd_setup(self, args):
+    '''Set up files and directories for VVM'''
+    vvm_repos_uri = 'git://github.com/kana/vim-version-manager.git'
+    repos_dir = get_repos_dir('vvm')
+    return (
+      (
+        has('git')
+        or die('Git is required to set up.')
+      ) and (
+        not isdir(get_vvm_dir())
+        or die('Files and directories for VVM are already set up.')
+      ) and (
+        sh('git clone %s %s' % (
+          vvm_repos_uri,
+          repos_dir
+        )) == 0
+        and ln_s('%s/bin' % repos_dir, '%s/bin' % get_vvm_dir())
+        and ln_s('%s/etc' % repos_dir, '%s/etc' % get_vvm_dir())
+      )
+    )
+
   def cmd_uninstall(self, args):
     '''Uninstall a specific version of Vim.'''
     p = VvmOptionParser()
@@ -279,6 +300,9 @@ def get_vims_dir(version):
 
 def get_vims_dir_itself():
   return '~/.vvm/vims'
+
+def get_vvm_dir():
+  return '~/.vvm'
 
 
 
