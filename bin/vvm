@@ -15,6 +15,7 @@ class VimVersionManager:
   # Directory structure:
   #   ~/.vvm                 The root directory for Vim Version Manager.
   #     bin                  For command-line utilities.
+  #     etc                  For configuration files.
   #     repos                Place to store repository of each version.
   #       $fork
   #       ...
