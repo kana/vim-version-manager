@@ -307,7 +307,7 @@ class VimVersionManager:
     return make(version, ('clean',))
 
   def make_install(self, version):
-    return make(version, ('install',))
+    return make(version, ('all', 'install',))
 
 
 
