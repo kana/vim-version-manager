@@ -172,6 +172,25 @@ class VimVersionManager:
       print 'Something wrong; %s binary does not exist.' % version
     return True
 
+  def cmd_update_itself(self, args):
+    '''Update VVM itself'''
+    repos_dir = get_repos_dir('vvm')
+    return (
+      (
+        has('git')
+        or die('Git is required to update VVM.')
+      ) and (
+        isdir(get_vvm_dir())
+        or die('VVM is not installed.  Please set up at the first.')
+      ) and (
+        sh('cd %s && git pull' % repos_dir) == 0
+        and echo('\n'.join((
+          '',
+          'VVM is successfully updated.',
+        )))
+      )
+    )
+
   def cmd_use(self, args):
     '''Use a specific version of Vim as the default one.'''
     p = VvmOptionParser()
