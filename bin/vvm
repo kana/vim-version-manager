@@ -349,7 +349,10 @@ class VersionInfo(object):
     try:
       known_fork = cls.get_dict()[fork_name]
     except KeyError:
-      die('Fork %s is not known to VVM.' % fork_name)
+      die('\n'.join((
+        'Fork %s is not known to VVM.',
+        'Edit %s to direct VVM how to fetch the fork.',
+      )) % (fork_name, get_etc_file('repos-map')))
 
     vi = VersionInfo()
     vi.fork = fork_name
