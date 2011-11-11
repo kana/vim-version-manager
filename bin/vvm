@@ -5,6 +5,7 @@
 import optparse
 import os
 import os.path
+import re
 import shutil
 import sys
 
@@ -20,11 +21,11 @@ class VimVersionManager:
   #       $fork
   #       ...
   #     src                  Place to store source code of each version.
-  #       $fork--$tagname    Naming is the same as ~/.vvm/vims.
+  #       $fork--$tag        Naming is the same as ~/.vvm/vims.
   #       ...
   #     vims                 Place to store deployed versions.
   #       current            Symbolic link for an install directory.
-  #       $fork--$tagname    This is the "version" format.
+  #       $fork--$tag        This is the "version" format.
   #       vimorg--v7-3-254   Example: Install directory for the original one.
   #       macvim--v7.3-53    Example: Install directory for MacVim.
   #       ...
@@ -195,38 +196,38 @@ class VimVersionManager:
   # Utilities::
 
   def checkout(self, version):
-    (fork, tagname) = parse_version(version)
+    vi = VersionInfo.parse(version)
     try:
-      checkout_func = getattr(self, 'checkout_%s' % fork)
+      checkout_func = getattr(self, 'checkout_%s' % vi.vcs)
     except AttributeError:
-      die('Fork "%s" is not known.' % fork)
-    return checkout_func(version, fork, tagname)
+      die('Fork "%s" is not known.' % vi.vcs)
+    return checkout_func(version, vi)
 
-  def checkout_macvim(self, version, fork, tagname):
-    # FIXME: Refine - Most steps are similar to checkout_vimorg.
-    repos_dir = get_repos_dir(fork)
+  def checkout_git(self, version, vi):
+    # FIXME: Refine - Most steps are similar to checkout_mercurial.
+    repos_dir = get_repos_dir(vi.fork)
     src_dir = get_src_dir(version)
     return (
-      (has('git') or die('Git is required to checkout %s.' % fork))
+      (has('git') or die('Git is required to checkout %s.' % vi.fork))
       and (isdir(get_src_dir_itself()) or mkdir(get_src_dir_itself()))
       and (
         isdir(src_dir)
         or sh('cd %s && git archive --prefix=%s/ %s | (cd %s && tar xf -)'
-              % (repos_dir, version, tagname, get_src_dir_itself())) == 0
+              % (repos_dir, version, vi.tag, get_src_dir_itself())) == 0
         or die()
       )
     )
 
-  def checkout_vimorg(self, version, fork, tagname):
-    repos_dir = get_repos_dir(fork)
+  def checkout_mercurial(self, version, vi):
+    repos_dir = get_repos_dir(vi.fork)
     src_dir = get_src_dir(version)
     return (
-      (has('hg') or die('Mercurial is required to checkout %s.' % fork))
+      (has('hg') or die('Mercurial is required to checkout %s.' % vi.fork))
       and (isdir(get_src_dir_itself()) or mkdir(get_src_dir_itself()))
       and (
         isdir(src_dir)
         or sh('cd %s && hg archive -t tar -r %s -p %s - | (cd %s && tar xf -)'
-              % (repos_dir, tagname, version, get_src_dir_itself())) == 0
+              % (repos_dir, vi.tag, version, get_src_dir_itself())) == 0
         or die()
       )
     )
@@ -244,20 +245,20 @@ class VimVersionManager:
     )) == 0
 
   def fetch(self, version):
-    (fork, tagname) = parse_version(version)
+    vi = VersionInfo.parse(version)
     try:
-      fetch_func = getattr(self, 'fetch_%s' % fork)
+      fetch_func = getattr(self, 'fetch_%s' % vi.vcs)
     except AttributeError:
-      die('Fork "%s" is not known.' % fork)
-    return fetch_func(version, fork, tagname)
+      die('Fork "%s" is not known.' % vi.vcs)
+    return fetch_func(version, vi)
 
-  def fetch_macvim(self, version, fork, tagname):
-    # FIXME: Refine - Most steps are similar to fetch_vimorg.
-    repos_uri = 'git://github.com/b4winckler/macvim.git'
-    repos_dir = get_repos_dir(fork)
+  def fetch_git(self, version, vi):
+    # FIXME: Refine - Most steps are similar to fetch_mercurial.
+    repos_uri = vi.uri
+    repos_dir = get_repos_dir(vi.fork)
     src_dir = get_src_dir(version)
     return (
-      (has('git') or die('Git is required to install %s.' % fork))
+      (has('git') or die('Git is required to install %s.' % vi.fork))
       and (isdir(get_repos_dir_itself()) or mkdir(get_repos_dir_itself()))
       and (
         isdir(repos_dir)
@@ -267,12 +268,12 @@ class VimVersionManager:
       and (sh('cd %s && git fetch' % repos_dir) == 0 or die())
     )
 
-  def fetch_vimorg(self, version, fork, tagname):
-    repos_uri = 'https://vim.googlecode.com/hg/'
-    repos_dir = get_repos_dir(fork)
+  def fetch_mercurial(self, version, vi):
+    repos_uri = vi.uri
+    repos_dir = get_repos_dir(vi.fork)
     src_dir = get_src_dir(version)
     return (
-      (has('hg') or die('Mercurial is required to install %s.' % fork))
+      (has('hg') or die('Mercurial is required to install %s.' % vi.fork))
       and (isdir(get_repos_dir_itself()) or mkdir(get_repos_dir_itself()))
       and (
         isdir(repos_dir)
@@ -290,6 +291,12 @@ class VimVersionManager:
 
 
 
+
+def get_etc_file(filename):
+  return '%s/%s' % (get_etc_dir_itself(), filename)
+
+def get_etc_dir_itself():
+  return '~/.vvm/etc'
 
 def get_repos_dir(fork):
   return '%s/%s' % (get_repos_dir_itself(), fork)
@@ -325,6 +332,58 @@ class VvmOptionParser(optparse.OptionParser):
     # optparse.OptionParser.parse_args doesn't accespt tuple.
     return optparse.OptionParser.parse_args(self, list(args))
 
+class VersionInfo(object):
+  __slots__ = (
+    'fork',
+    'tag',
+    'uri',
+    'vcs',
+  )
+
+  def __init__(self):
+    return
+
+  @classmethod
+  def parse(cls, version_string):
+    (fork_name, tag_name) = version_string.split('--')
+    try:
+      known_fork = cls.get_dict()[fork_name]
+    except KeyError:
+      die('\n'.join((
+        'Fork %s is not known to VVM.',
+        'Edit %s to direct VVM how to fetch the fork.',
+      )) % (fork_name, get_etc_file('repos-map')))
+
+    vi = VersionInfo()
+    vi.fork = fork_name
+    vi.tag = tag_name
+    vi.uri = known_fork.uri
+    vi.vcs = known_fork.vcs
+    return vi
+
+  @classmethod
+  def read_config_files(cls):
+    vi_dict = {}
+    for filename in ('repos-map.default', 'repos-map'):
+      path = os.path.expanduser(get_etc_file(filename))
+      if not isfile(path):
+        continue
+      for line in open(path):
+        if re.match(r'^\s*$', line) or re.match(r'^\s*#', line):
+          continue
+        else:
+          vi = cls()
+          (vi.fork, vi.vcs, vi.uri) = line.split()
+          vi_dict[vi.fork] = vi
+    return vi_dict
+
+  @classmethod
+  def get_dict(cls):
+    if cls.__vi_dict is None:
+      cls.__vi_dict = cls.read_config_files()
+    return cls.__vi_dict
+  __vi_dict = None
+
 def die(message=''):
   return exit(message)
 
@@ -337,6 +396,9 @@ def has(progname):
 
 def isdir(path):
   return os.path.isdir(os.path.expanduser(path))
+
+def isfile(path):
+  return os.path.isfile(os.path.expanduser(path))
 
 def ln_s(target, link_name):
   os.symlink(os.path.expanduser(target), os.path.expanduser(link_name))
@@ -354,9 +416,6 @@ def mkdir(path):
 
 def normalize_path(path):
   return os.path.abspath(os.path.expanduser(path))
-
-def parse_version(version):
-  return version.split('--')
 
 def readlink(path):
   return os.readlink(os.path.expanduser(path))
