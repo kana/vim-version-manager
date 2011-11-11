@@ -376,7 +376,10 @@ class VersionInfo(object):
 
   @classmethod
   def get_dict(cls):
-    return cls.read_config_files()
+    if cls.__vi_dict is None:
+      cls.__vi_dict = cls.read_config_files()
+    return cls.__vi_dict
+  __vi_dict = None
 
 def die(message=''):
   return exit(message)
