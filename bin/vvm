@@ -285,7 +285,7 @@ class VimVersionManager:
         or sh('git clone --bare %s %s' % (repos_uri, repos_dir)) == 0
         or die()
       )
-      and (sh('cd %s && git fetch' % repos_dir) == 0 or die())
+      and (sh('cd %s && git fetch --tags' % repos_dir) == 0 or die())
     )
 
   def fetch_mercurial(self, version, vi):
