@@ -38,14 +38,13 @@ class VimVersionManager:
     p = VvmOptionParser(version='%prog 1.2.3')
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
-      p.print_help()
-    else:
-      subcmd_name = left_args[0]
-      try:
-        subcmd_func = getattr(self, 'cmd_%s' % subcmd_name)
-      except AttributeError:
-        die('Subcommand "%s" is not available.' % subcmd_name)
-      subcmd_func(left_args)
+      left_args = ['help']
+    subcmd_name = left_args[0]
+    try:
+      subcmd_func = getattr(self, 'cmd_%s' % subcmd_name)
+    except AttributeError:
+      die('Subcommand "%s" is not available.' % subcmd_name)
+    subcmd_func(left_args)
     return
 
   # Subcommands::
