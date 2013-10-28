@@ -95,9 +95,11 @@ class VimVersionManager:
 
   def cmd_list(self, args):
     '''List currently installed versions of Vim.'''
+    current_version = get_current_version()
     for version in listdir(get_vims_dir_itself()):
       if isdir(get_vims_dir(version)) and version != 'current':
-        print version
+        mark = '*' if version == current_version else ' '
+        print mark, version
     return True
 
   def cmd_rebuild(self, args):
@@ -317,6 +319,13 @@ class VimVersionManager:
 
 
 
+
+def get_current_version():
+  try:
+    path = os.path.basename(readlink(get_vims_dir('current')))
+    return path
+  except:
+    return None
 
 def get_etc_file(filename):
   return '%s/%s' % (get_etc_dir_itself(), filename)
