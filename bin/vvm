@@ -93,6 +93,13 @@ class VimVersionManager:
       and self.make_install(version)
     )
 
+  def cmd_list(self, args):
+    '''List currently installed versions of Vim.'''
+    for version in listdir(get_vims_dir_itself()):
+      if isdir(get_vims_dir(version)) and version != 'current':
+        print version
+    return True
+
   def cmd_rebuild(self, args):
     '''Rebuild a specific version of Vim, then install it.'''
     p = VvmOptionParser()
@@ -418,6 +425,9 @@ def isdir(path):
 
 def isfile(path):
   return os.path.isfile(os.path.expanduser(path))
+
+def listdir(path):
+  return os.listdir(os.path.expanduser(path))
 
 def ln_s(target, link_name):
   os.symlink(os.path.expanduser(target), os.path.expanduser(link_name))
