@@ -1,4 +1,4 @@
-# $fork $vcs $uri
+# $fork $vcs $repos_uri
 
-macvim git git://github.com/b4winckler/macvim.git
-vimorg git https://github.com/vim/vim
+macvim git https://github.com/macvim-dev/macvim.git
+vimorg git https://github.com/vim/vim.git
