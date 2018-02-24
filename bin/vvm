@@ -86,6 +86,10 @@ class VimVersionManager:
       die('Please specify a version of Vim to install.')
     version = left_args[0]
     configure_options = left_args[1:]
+    vims_dir = get_vims_dir(version)
+    if isdir(vims_dir):
+      echo('%s is already installed.' % version)
+      return
     return (
       self.fetch(version)
       and self.checkout(version)
