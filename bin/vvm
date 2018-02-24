@@ -137,7 +137,7 @@ class VimVersionManager:
         has('git')
         or die('Git is required to set up.')
       ) and (
-        not isdir(get_vvm_dir())
+        not (isdir(get_vvm_dir()) and isdir(repos_dir))
         or die('Files and directories for VVM are already set up.')
       ) and (
         sh('git clone %s %s' % (
