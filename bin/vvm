@@ -52,7 +52,7 @@ class VimVersionManager:
   def cmd_fetch(self, args):
     '''Fetch source code of a specific version of Vim.'''
     p = VvmOptionParser()
-    p.usage = '%prog fetch $version'
+    p.usage = '%prog fetch <version>'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to fetch its source code.')
@@ -80,7 +80,7 @@ class VimVersionManager:
   def cmd_install(self, args):
     '''Install a specific version of Vim.'''
     p = VvmOptionParser()
-    p.usage = '%prog install $version $configure_option ...'
+    p.usage = '%prog install <version> [<configure-option>...]'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to install.')
@@ -109,7 +109,7 @@ class VimVersionManager:
   def cmd_rebuild(self, args):
     '''Rebuild a specific version of Vim, then install it.'''
     p = VvmOptionParser()
-    p.usage = '%prog rebuild $version $configure_option ...'
+    p.usage = '%prog rebuild <version> [<configure-option>...]'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to rebuild.')
@@ -124,7 +124,7 @@ class VimVersionManager:
   def cmd_reinstall(self, args):
     '''Reinstall a specific version of Vim.'''
     p = VvmOptionParser()
-    p.usage = '%prog reinstall $version $configure_option ...'
+    p.usage = '%prog reinstall <version> [<configure-option>...]'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to reinstall.')
@@ -162,7 +162,7 @@ class VimVersionManager:
   def cmd_uninstall(self, args):
     '''Uninstall a specific version of Vim.'''
     p = VvmOptionParser()
-    p.usage = '%prog uninstall $version'
+    p.usage = '%prog uninstall <version>'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to uninstall.')
@@ -206,7 +206,7 @@ class VimVersionManager:
   def cmd_use(self, args):
     '''Use a specific version of Vim as the default one.'''
     p = VvmOptionParser()
-    p.usage = '%prog use $version'
+    p.usage = '%prog use <version>'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to use.')
