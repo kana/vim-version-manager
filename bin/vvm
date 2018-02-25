@@ -206,7 +206,7 @@ class VimVersionManager:
   def cmd_use(self, args):
     '''Use a specific version of Vim as the default one.'''
     p = VvmOptionParser()
-    p.usage = '%prog use <version>'
+    p.usage = '%prog use <version> [--install [<configure-option>...]]'
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       die('Please specify a version of Vim to use.')
@@ -218,7 +218,10 @@ class VimVersionManager:
     else:
       vims_dir = get_vims_dir(version)
       if not isdir(vims_dir):
-        die('%s is not installed.' % version)
+        if 2 <= len(left_args) and left_args[1] == '--install':
+          self.cmd_install(('install', version) + tuple(left_args[2:])) or die()
+        else:
+          die('%s is not installed.' % version)
       current_path = get_vims_dir('current')
       if isdir(current_path):
         rm(current_path)
