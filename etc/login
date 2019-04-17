@@ -1,8 +1,22 @@
 #!/bin/bash
 
+__vvm_completions()
+{
+  if [ "${#COMP_WORDS[@]}" == "2" ]; then
+    COMPREPLY=($(compgen -W "fetch help install list rebuild reinstall setup uninstall update_itself use" "${COMP_WORDS[1]}"))
+  elif [ "${#COMP_WORDS[@]}" == "3" ]; then
+    local vims=$(echo $HOME/.vvm/vims/* | sed "s@$HOME/.vvm/vims/@@g")
+    COMPREPLY=($(compgen -W "$vims" "${COMP_WORDS[2]}"))
+  else
+    return
+  fi
+}
+
 __vvm_configure_path()
 {
   local vvm_bin_path="$HOME/.vvm/bin:$HOME/.vvm/vims/current/bin"
+
+  complete -F __vvm_completions vvm
 
   echo "$PATH" | grep -Fqv "$vvm_bin_path" &&
     PATH="$vvm_bin_path:$PATH"
