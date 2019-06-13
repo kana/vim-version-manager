@@ -100,7 +100,9 @@ class VimVersionManager:
   def cmd_list(self, args):
     '''List currently installed versions of Vim.'''
     current_version = get_current_version()
-    for version in listdir(get_vims_dir_itself()):
+    versions = listdir(get_vims_dir_itself())
+    versions.sort()
+    for version in versions:
       if isdir(get_vims_dir(version)) and version != 'current':
         mark = '*' if version == current_version else ' '
         print mark, version
