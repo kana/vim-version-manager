@@ -16,7 +16,13 @@ __vvm_configure_path()
 {
   local vvm_bin_path="$HOME/.vvm/bin:$HOME/.vvm/vims/current/bin"
 
-  complete -F __vvm_completions vvm
+  case "$SHELL" in
+    */bash)
+      complete -F __vvm_completions vvm
+      ;;
+    *)
+      ;;
+  esac
 
   echo "$PATH" | grep -Fqv "$vvm_bin_path" &&
     PATH="$vvm_bin_path:$PATH"
