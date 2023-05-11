@@ -35,7 +35,7 @@ class VimVersionManager:
   # Driver::
 
   def main(self, args):
-    p = VvmOptionParser(version='%prog 1.2.3')
+    p = VvmOptionParser(version='%prog 2.0.0')
     (options, left_args) = p.parse_args(args[1:])
     if len(left_args) == 0:
       left_args = ['help']
