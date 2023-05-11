@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # FIXME: Add tests.
 # FIXME: Refine implementation of subcommands.
 
@@ -68,13 +68,13 @@ class VimVersionManager:
     subcmd_names = [n for n in dir(self) if n.startswith('cmd_')]
     subcmd_names.sort()
     longest_subcmd_name = max(len(n) for n in subcmd_names)
-    print 'Available commands:'
+    print('Available commands:')
     for n in subcmd_names:
-      print '  %s%s%s' % (
+      print('  %s%s%s' % (
         n[len('cmd_'):],
         ' ' * (longest_subcmd_name - len(n) + 2),
         getattr(self, n).__doc__.split('\n')[0]
-      )
+      ))
     return True
 
   def cmd_install(self, args):
@@ -105,7 +105,7 @@ class VimVersionManager:
     for version in versions:
       if isdir(get_vims_dir(version)) and version != 'current':
         mark = '*' if version == current_version else ' '
-        print mark, version
+        print(mark, version)
     return True
 
   def cmd_rebuild(self, args):
@@ -179,11 +179,11 @@ class VimVersionManager:
     if isdir(src_dir):
       rm_r(src_dir)
     else:
-      print 'Something wrong; %s source does not exist.' % version
+      print('Something wrong; %s source does not exist.' % version)
     if isdir(vims_dir):
       rm_r(vims_dir)
     else:
-      print 'Something wrong; %s binary does not exist.' % version
+      print('Something wrong; %s binary does not exist.' % version)
     return True
 
   def cmd_update_itself(self, args):
@@ -432,7 +432,7 @@ def die(message=''):
   return exit(message)
 
 def echo(message):
-  print message
+  print(message)
   return True
 
 def has(progname):
@@ -458,7 +458,7 @@ def make(version, args):
   )) == 0
 
 def mkdir(path):
-  os.makedirs(os.path.expanduser(path), 0755)
+  os.makedirs(os.path.expanduser(path), 0o755)
   return True
 
 def normalize_path(path):
